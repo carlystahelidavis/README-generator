@@ -17,11 +17,6 @@ const questions = [
     },
     {
         type: 'input',
-        name: 'tableOfContents',
-        message: 'Please provide a table of contents here:',
-    },
-    {
-        type: 'input',
         name: 'installation',
         message: 'Please provide any installation instructions here:',
     },
@@ -59,49 +54,61 @@ const questions = [
 ];
 
 
-function getFormatting(data) {
-    `
-    #${data.projectTitle.input}
+function getFormatting(answers) {
+    const answerFormat =
+        `# ${answers.projectTitle}
 
-    ##Table of Contents
-    1. [Description](#description)
-    2. [Installation](#installation)
-    3. [Usage](#usage)
-    4. [Contributing](#contributing)
-    5. [Tests](#tests)
-    6. [Questions](#questions)
+## Table of Contents
+1. [Description](#description)
+2. [Installation](#installation)
+3. [Usage](#usage)
+4. [Contributing](#contributing)
+5. [Tests](#tests)
+6. [Questions](#questions)
 
-    ##Description <a name="description"></a>
-    ${data.description.input}
+## Description <a name="description"></a>
+${answers.description}
 
-    ##Installation <a name="installation"></a>
-    ${data.installation.input}
+## Installation <a name="installation"></a>
+${answers.installation}
 
-    ##Usage <a name="usage"></a>
-    ${data.usage.input}
+## Usage <a name="usage"></a>
+${answers.usage}
 
-    ##Contributing <a name="contributing"></a>
-    ${data.contributing.input}
+## Contributing <a name="contributing"></a>
+${answers.contributing}
 
-    ##Tests <a name="tests"></a>
-    ${data.tests.input}
+## Tests <a name="tests"></a>
+${answers.tests}
 
-    ##Questions <a name="questions"></a>
-    If you have any questions, please contact me.
-    GitHub: github.com/${data.gitHub.input}
-    Email: ${data.email.input}`
+## Questions <a name="questions"></a>
+If you have any questions, please contact me.
+GitHub: github.com/${answers.gitHubUsername}
+Email: ${answers.email}`;
+    return answerFormat;
 }
 // inquirer way to do questions:
-inquirer
-    .prompt([
 
-    ])
+
+// When you're done
 // TODO: Create a function to write README file
 function writeREADME(input) {
     fs.writeFile("./testFiles/README.md", getFormatting(input), (err) =>
         err ? console.log(err) : console.log("README generated!")
     );
 }
+
+inquirer.prompt(questions)
+    .then(function (answers) {
+        const userAnswer = getFormatting(answers)
+        return userAnswer
+    })
+    .then(
+        function (answers) {
+            fs.writeFile("./testFiles/README.md", answers, (err) =>
+                err ? console.log(err) : console.log("README generated!")
+            );
+        })
 // TODO: Create a function to initialize app
 function init() { }
 
